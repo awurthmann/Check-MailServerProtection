@@ -32,7 +32,7 @@ ElseIf (($NameExchange -like "*outlook.com*") -or ($NameExchange -like "*onmicro
 }
 
 If ($Selector){
-	$Dkim=(Resolve-DnsName -Name $Selector._domainkey.$Domain -Type txt -ErrorAction SilentlyContinue).Strings
+	$Dkim=(Resolve-DnsName -Name "$Selector._domainkey.$Domain" -Type txt -ErrorAction SilentlyContinue).Strings
 }
 
 If ($Dkim) {
