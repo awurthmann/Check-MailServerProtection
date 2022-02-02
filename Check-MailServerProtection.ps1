@@ -55,7 +55,7 @@ If ($Dkim) {
 
 }
 Else{
-	$Dkim="Unknown"
+	$Dkim="Unknown: Selector Not Found"
 }
 
 $myObject = [PSCustomObject]@{
