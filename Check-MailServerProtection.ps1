@@ -23,15 +23,18 @@ $NameExchange=(Resolve-DnsName -Name $Domain -Type MX).NameExchange
 $Spf=(Resolve-DnsName -Name $Domain -Type TXT | Where {$_.Strings -like "v=spf*"}).Strings
 $Dmarc=(Resolve-DnsName -Name _dmarc.$Domain -Type txt).Strings
 
-If ($NameExchange -like "*google.com*"){
-	$Selector="google"
-}
-ElseIf (($NameExchange -like "*outlook.com*") -or ($NameExchange -like "*onmicrosoft.com*")){
-  $Selector="selector1"
-	If (!($Dkim)){$Selector="selector2"}
+If (!($Selector)){
+	If ($NameExchange -like "*google.com*"){
+		$Selector="google"
+	}
+	ElseIf (($NameExchange -like "*outlook.com*") -or ($NameExchange -like "*onmicrosoft.com*")){
+	  $Selector="selector1"
+		$Dkim=(Resolve-DnsName -Name "$Selector._domainkey.$Domain" -Type txt -ErrorAction SilentlyContinue).Strings
+		If (!($Dkim)){$Selector="selector2"}
+	}
 }
 
-If ($Selector){
+If (($Selector) -and (!($Dkim))){
 	$Dkim=(Resolve-DnsName -Name "$Selector._domainkey.$Domain" -Type txt -ErrorAction SilentlyContinue).Strings
 }
 
